@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gerenciador de dívidas</title>
+  <link href="src/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="container">
+    <table>
+      <thead>
+        <tr>
+          <th>nome</th>
+          <th>valor</th>
+          <th>data final</th>
+
+        </tr>
+      </thead>
+
+      <tbody id="areaTabela">
+
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <button id="btnEditAccount" class="btnEditAccount">editar conta</button>
+  <button id="btnAddAccount" class="btnAddAccount">adicionar conta</button>
+
+  <div id="areaAdd" class="areaAdd">
+    <form id="formAddAccount" style="display:none;">
+      <input type="text" name="nameAccount" id="nameAccount" placeholder="nome da conta">
+      <input type="number" name="valueAccount" id="valueAccount" placeholder="valor da conta EX: 000.00">
+      <input type="date" name="endDateAccount" id="endDateAccount" placeholder="data final DD/MM/AAAA">
+      <input type="text" name="obsAccount" id="obsAccount" placeholder="observações">
+
+      <button id="buttonSubmitAdd" class="addConta" type="submit">armazenar conta</button>
+
+    </form>
+    <form id="formEditAccount" style="display:none;">
+      coloque nos campos as informações que você quer editar
+      <input type="number" name="idAccount" id="idAccount" placeholder="id da conta">
+      <input type="text" name="nameAccount" id="nameConta" placeholder="nome da conta">
+      <input type="number" name="valueAccount" id="value conta" placeholder="valor da conta EX: 000.00">
+      <input type="date" name="endDateAccount" id="endDate" placeholder="data final DD/MM/AAAA">
+      <input type="text" name="obsAccount" placeholder="observações">
+      <button id="buttonSubmitEdit" class="addConta" type="submit">mandar informações</button>
+    </form>
+
+  </div>
+  <h2>graficos<br>
+    <hr>
+  </h2>
+  <div class="divCanvas">
+
+    <canvas id="graficoPie"></canvas>
+    <canvas id="graficoBar"></canvas>
+  </div>
+
+
+  <script type="module" src="src/main.js"></script>
+</body>
+
+</html>

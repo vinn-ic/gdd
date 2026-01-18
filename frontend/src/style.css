@@ -1,0 +1,89 @@
+body {
+  font-family: sans-serif;
+  font-size: clamp(14px, 1.2vw, 18px);
+  background-color: #F5F5F5;
+}
+
+p {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+i {
+  color: red;
+}
+
+.container {
+  max-width: 900px;
+  padding: 1rem;
+  margin: 0 auto;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem auto;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+th {
+  background: #f5f5f5;
+}
+
+.red {
+  background: rgba(200, 50, 50, 0.5);
+}
+
+.green {
+  background: rgba(144, 238, 144, 0.5);
+}
+
+h2 {
+  margin-top: 10%;
+  text-align: center;
+}
+
+.btnAddAccount,
+.btnEditAccount {
+  background-color: rgba(98, 160, 234, 0.5);
+  border-radius: 3px;
+  border-color: #ffffff;
+  color: black;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 14px;
+}
+
+input {
+  border-radius: 10px;
+
+}
+
+.divCanvas {
+
+  display: flex;
+  width: 45%;
+}
+
+@media (max-width: 769px) {
+  input {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    margin-top: 10px;
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  .divCanvas {
+    display: block;
+    width: 100%;
+  }
+
+}
