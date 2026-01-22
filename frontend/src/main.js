@@ -9,24 +9,17 @@ const btnEditAccount = document.getElementById("btnEditAccount")
 
 const graficoPie = document.getElementById("graficoPie");
 const graficoBar = document.getElementById("graficoBar")
+const areaTabela = document.getElementById("areaTabela")
+
+let data = []
+let id = 0;
 
 window.addEventListener("load", async () => {
-  const areaTabela = document.getElementById("areaTabela")
-  let dataTime = new Date()
-
-
   const response = await fetch("http://" + ipHost + ":8080/showTabela.php")
-  const data = await response.json()
-  console.log(data)
-  let total = 0
-  let id = 0
+  data = await response.json()
 
-  areaTabela.innerHTML = ""
+  let total = 0;
 
-
-
-
-  //apagar depois esse forEach
   data.tabela.forEach(tabela => {
     id++;
     if (!tabela.boolPaid) {
@@ -34,60 +27,16 @@ window.addEventListener("load", async () => {
     }
   })
 
-  data.tabela.sort((a, b) => {
-    const dataA = convertDate(a.endDate)
-    const dataB = convertDate(b.endDate)
 
-    const boolPaidA = a.boolPaid
-    const boolPaidB = b.boolPaid
+  console.log(data)
 
-    const dataAPast = dataA < dataTime
-    const dataBPast = dataB < dataTime
-
-    if (boolPaidA && !boolPaidB) return 1
-    if (!boolPaidA && boolPaidB) return -1
-
-    if (!dataAPast && !dataBPast) return dataA - dataB;
-    if (dataAPast && dataBPast) return dataB - dataA;
-
-    return dataAPast ? -1 : 1
-  })
-
-  for (var i = 0; i < id; i++) {
-    var tabela = data.tabela[i];
-
-    if (tabela.boolPaid) {
-
-      areaTabela.innerHTML += `
-        <tr class="green">
-          <td class="tabelaName" data-id="${tabela.id}" data-boolpaid="${tabela.boolPaid}" >${tabela.id}:${tabela.name}<br> <i>${tabela.obs}</i></td>
-          <td>${tabela.value}</td>
-          <td>${tabela.endDate}</td>
-        </tr>       
-      `
-    } else if (convertDate(tabela.endDate) < dataTime) {
-      areaTabela.innerHTML += `
-        <tr class="red">
-          <td class="tabelaName" data-id="${tabela.id}" data-boolPaid="${tabela.boolPaid}" >${tabela.id}:${tabela.name}<br> <i>${tabela.obs}</i></td>
-          <td>${tabela.value}</td>
-          <td>${tabela.endDate}</td>
-        </tr>       
-      `
-    } else if (!tabela.boolPaid) {
-      areaTabela.innerHTML += `
-        <tr>
-          <td class="tabelaName" data-id="${tabela.id}" data-boolPaid="${tabela.boolPaid}" >${tabela.id}:${tabela.name}<br> <i>${tabela.obs}</i></td>
-          <td>${tabela.value}</td>
-          <td>${tabela.endDate}</td>
-        </tr>       
-      `
-    }
-
-
-  }
-
+  areaTabela.innerHTML = ""
 
   console.log("iniciando graficos...")
+
+  renderTable()
+
+
 
   const filt = data.tabela.filter(row => row.boolPaid == 0)
   new Chart(
@@ -149,18 +98,90 @@ function convertDate(d) {
   return new Date(ano, mes - 1, dia)
 
 }
+function renderTable() {
+  let dataTime = new Date()
 
+  data.tabela.sort((a, b) => {
+    const dataA = convertDate(a.endDate)
+    const dataB = convertDate(b.endDate)
+
+    const boolPaidA = a.boolPaid
+    const boolPaidB = b.boolPaid
+
+    const dataAPast = dataA < dataTime
+    const dataBPast = dataB < dataTime
+
+    if (boolPaidA && !boolPaidB) return 1
+    if (!boolPaidA && boolPaidB) return -1
+
+    if (!dataAPast && !dataBPast) return dataA - dataB;
+    if (dataAPast && dataBPast) return dataB - dataA;
+
+    return dataAPast ? -1 : 1
+  })
+  console.log(data)
+
+  areaTabela.innerHTML = ""
+  for (var i = 0; i < id; i++) {
+    var tabela = data.tabela[i];
+
+    if (tabela.boolPaid) {
+      areaTabela.innerHTML += `
+        <tr class="table-success" id="idTr">
+          <td>${tabela.id}</td>
+          <td class="tabelaName" data-id="${tabela.id}" data-boolPaid="${tabela.boolPaid}" >${tabela.name}<br> <i>${tabela.obs}</i></td>
+          <td>${tabela.value}</td>
+          <td>${tabela.endDate}</td>
+        </tr>       
+      `
+    } else if (convertDate(tabela.endDate) < dataTime) {
+      areaTabela.innerHTML += `
+        <tr class="table-danger" id="idTr">
+          <td>${tabela.id}</td>
+          <td class="tabelaName" data-id="${tabela.id}" data-boolPaid="${tabela.boolPaid}" >${tabela.name}<br> <i>${tabela.obs}</i></td>
+          <td>${tabela.value}</td>
+          <td>${tabela.endDate}</td>
+        </tr>       
+      `
+    } else if (!tabela.boolPaid) {
+      areaTabela.innerHTML += `
+        <tr id="idTr">
+          <td>${tabela.id}</td>
+          <td class="tabelaName" data-id="${tabela.id}" data-boolPaid="${tabela.boolPaid}" >${tabela.name}<br> <i>${tabela.obs}</i></td>
+          <td>${tabela.value}</td>
+          <td>${tabela.endDate}</td>
+        </tr>       
+      `
+    }
+  }
+}
 areaTabela.addEventListener("mouseup", (e) => {
   const td = e.target.closest(".tabelaName")
   if (!td) return
+  const tr = e.target.closest("#idTr")
 
-  const id = td.dataset.id;
-  const boolPaid = td.dataset.boolpaid
+  const findId = data.tabela.findIndex(i => i.id == td.dataset.id)
 
+  console.log(findId)
+  let boolPaid = data.tabela[findId].boolPaid
+  let id = data.tabela[findId].id
   changePaid(id, boolPaid)
+
+  if (data.tabela[findId].boolPaid == 0) {
+    tr.classList.add("table-success")
+    data.tabela[findId].boolPaid = 1
+    td.dataset.boolPaid = 1
+  } else if (data.tabela[findId].boolPaid == 1) {
+    tr.classList.remove("table-success")
+    data.tabela[findId].boolPaid = 0
+    td.dataset.boolPaid = 0
+  }
+  renderTable()
 
 
 })
+
+
 
 async function changePaid(id, boolPaid) {
   console.log(id)
@@ -173,13 +194,8 @@ async function changePaid(id, boolPaid) {
     body: "idAccount=" + id + "&boolPaid=" + boolPaid,
   })
 
-  window.location.reload()
+  //window.location.reload()
 }
-const formAdd = document.getElementById("formAddAccount")
-btnAddAccount.addEventListener("click", async () => {
-  formAdd.style.display = "block";
-})
-
 const btnSubmitAddAccount = document.getElementById("buttonSubmitAdd");
 btnSubmitAddAccount.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -191,12 +207,6 @@ btnSubmitAddAccount.addEventListener("click", async (e) => {
   window.location.reload()
 })
 
-
-
-const formEdit = document.getElementById("formEditAccount")
-btnEditAccount.addEventListener("click", async () => {
-  formEdit.style.display = "block"
-})
 
 const btnSubmitEdit = document.getElementById("buttonSubmitEdit")
 
@@ -210,5 +220,14 @@ btnSubmitEdit.addEventListener("click", async (e) => {
 
 })
 
+const btnDeleteAccount = document.getElementById("btnDeleteAccount")
+btnDeleteAccount.addEventListener("click", async (e) => {
+  alert("isso vai apagar a conta do banco de dados!")
 
+  await fetch("http://" + ipHost + ":8080/deleteAccount.php", {
+    method: "POST",
+    body: new FormData(formEdit)
+  })
+  window.location.reload()
 
+})
